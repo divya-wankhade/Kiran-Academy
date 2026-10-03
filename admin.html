@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Contact Messages</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1d4ed8;
+            margin-bottom: 20px;
+        }
+
+        .logout {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 25px;
+            padding: 10px 20px;
+            background: #e63946;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        td {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Contact Messages</h1>
+
+    <a href="/admin-login.html" class="logout">Logout</a>
+
+    <div class="table-container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody id="messagesTable">
+                <tr>
+                    <td colspan="6">Loading...</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <script>
+        fetch("/api/contacts")
+            .then(response => response.json())
+            .then(data => {
+
+                const table = document.getElementById("messagesTable");
+
+                table.innerHTML = "";
+
+                if (data.length === 0) {
+                    table.innerHTML = `
+                        <tr>
+                            <td colspan="6">No messages found.</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                data.forEach(contact => {
+
+                    const row = `
+                        <tr>
+                            <td>${contact.id}</td>
+                            <td>${contact.name}</td>
+                            <td>${contact.email}</td>
+                            <td>${contact.subject}</td>
+                            <td>${contact.message}</td>
+                            <td>${contact.created_at}</td>
+                        </tr>
+                    `;
+
+                    table.innerHTML += row;
+                });
+
+            })
+            .catch(error => {
+                console.error("Error:", error);
+
+                document.getElementById("messagesTable").innerHTML = `
+                    <tr>
+                        <td colspan="6">Unable to load messages.</td>
+                    </tr>
+                `;
+            });
+    </script>
+    </body>
+</html>
