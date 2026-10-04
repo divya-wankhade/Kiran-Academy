@@ -24,7 +24,8 @@ console.log("Tring to connect to Aiven MySQL...");
 
 db.connect((err) => {
     if (err) {
-        console.log("MySQL connection failed:",err.message);
+        console.log("MYSQL ERROR:",err);
+        console.error("MYSQL ERROR MESSAGE:",err.message);
     } else {
         console.log("MySQL connected successfully!");
     }
