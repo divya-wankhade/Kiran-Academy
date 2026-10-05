@@ -16,11 +16,13 @@ const db = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: Number(process.env.DB_PORT),
+
+    family: 4,
+
     ssl: {
-        ca:
-        fs.readFileSync(path.join(__dirname,"ca.pem")),
-        rejectUnauthorized: true
+        rejectUnauthorized: false
     },
+
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
@@ -112,6 +114,6 @@ app.post("/contact", (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
 });
