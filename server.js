@@ -26,7 +26,7 @@ const db = mysql.createPool({
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
-    connectTimeout: 20000
+    connectTimeout: 60000
 });
 
 console.log("MySQL connection pool created.");
