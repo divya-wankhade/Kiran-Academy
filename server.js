@@ -1,6 +1,7 @@
 const express = require("express");
 const mysql = require("mysql2");
 const path = require("path");
+const fs = require("fs");
 const session = require("express-session");
 require("dotenv").config();
 
@@ -16,9 +17,10 @@ const db = mysql.createPool({
     database: process.env.DB_NAME,
     port: Number(process.env.DB_PORT),
     ssl: {
-        rejectUnauthorized: false
+        ca:
+        fs.readFileSync(path.join(__dirname,"ca.pem")),
+        rejectUnauthorized: true
     },
-
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
