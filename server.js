@@ -9,7 +9,7 @@ console.log("MY SERVER.JS IS RUNNING");
 const PORT = process.env.PORT || 3000;
 
 // MySQL connection
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
