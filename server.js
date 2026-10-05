@@ -18,18 +18,16 @@ const db = mysql.createPool({
     ssl: {
         rejectUnauthorized: false
     },
+
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
     connectTimeout: 20000
 });
-console.log("Tring to connect to Aiven MySQL...");
 
-db.connect((err) => {
-    if (err) {
-        console.log("MYSQL ERROR:",err);
-        console.error("MYSQL ERROR MESSAGE:",err.message);
-    } else {
-        console.log("MySQL connected successfully!");
-    }
-});
+console.log("MySQL connection pool created.");
+
+
 app.use(session({
     secret: "kiran-academy-secret",
     resave: false,
@@ -75,7 +73,7 @@ app.post("/admin-login", (req, res) => {
     const { username, password } = req.body;
 
     if (username === "admin" && password === "admin123") {
-        res.session.adminLoggedIn = true;
+        req.session.adminLoggedIn = true;
         res.redirect("/admin.html");
     } else {
         res.send("Invalid username or password");
@@ -86,7 +84,9 @@ app.post("/admin-login", (req, res) => {
 app.post("/contact", (req, res) => {
     console.log("FORM DATA:", req.body);
 
-    const { name, email, subject, message } = req.body;
+    const { name, email, subject, message, massage} = req.body;
+
+    const finalMessage = message || massage;
 
     const sql = `
         INSERT INTO contacts (name, email, subject, message)
@@ -95,12 +95,14 @@ app.post("/contact", (req, res) => {
 
     db.query(
         sql,
-        [name, email, subject, message],
+        [name, email, subject, finalMessage],
         (err) => {
             if (err) {
                 console.log("Database error:", err.message);
                 return res.status(500).send("Something went wrong.");
             }
+
+            console.log("Contact saved successfully!")
 
             res.send("Thank you! Your message has been saved.");
         }
